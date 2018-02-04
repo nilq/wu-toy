@@ -5,7 +5,7 @@ extern print :: (a: string) -> {}
 
 extern module math {
 	random :: (a: float, b: float) float -> 0
-	sqrt   :: (a: float) float 			 -> 0
+	sqrt   :: (a: float) float -> 0
 }
 
 love graphics setBackgroundColor(255, 200, 200)
