@@ -1,0 +1,2 @@
+module wu_love
+expose wu_love (*)

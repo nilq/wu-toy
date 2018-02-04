@@ -1,0 +1,116 @@
+module src
+extern expose src (*)
+
+extern print :: (a: string) -> {}
+
+extern module math {
+	random :: (a: float, b: float) float -> 0
+	sqrt   :: (a: float) float 			 -> 0
+}
+
+love graphics setBackgroundColor(255, 200, 200)
+
+window_width  :: 800
+window_height :: 600
+
+struct point {
+	x: float
+	y: float
+}
+
+distance :: (a: point, b: point) float -> {
+	dx := a x - b x
+	dy := a y - b y
+
+	dx = dx^2
+	dy = dy^2
+
+	math sqrt(dx + dy)
+}
+
+struct square {
+	pos:   point
+	size:  point
+	speed: float
+	color: [float]
+}
+
+player := square {
+	pos: point {
+		x: window_width  / 2 - 15
+		y: window_height / 2 - 15
+	}
+
+	size: point {
+		x: 30
+		y: 30
+	}
+
+	color: [200, 255, 200]
+
+	speed: 350
+}
+
+potato := square {
+	pos: point {
+		x: math random(0, window_width)
+		y: math random(0, window_height)
+	}
+
+	size: point {
+		x: 15
+		y: 15
+	}
+
+	speed: .5
+
+	color: [200, 200, 200]
+}
+
+love update = (dt: float) -> {
+	dx: float = 0
+	dy: float = 0
+
+	if love keyboard isDown("up") {
+		dy -= player speed * dt
+	}
+
+	if love keyboard isDown("down") {
+		dy += player speed * dt
+	}
+
+	if love keyboard isDown("left") {
+		dx -= player speed * dt
+	}
+
+	if love keyboard isDown("right") {
+		dx += player speed * dt
+	}
+
+	player pos x += dx
+	player pos y += dy
+
+	player pos x %= window_width
+	player pos y %= window_height
+
+	if (distance(player pos, potato pos) < (player size x)) {
+		potato pos x = math random(0, window_width)
+		potato pos y = math random(0, window_height)
+
+		player size x += 5
+		player size y += 5
+	}
+}
+
+cool_square :: (x: float, y: float, size: point, color: [float]) -> {
+	love graphics setColor(color[0], color[1], color[2])
+	love graphics rectangle("fill", x, y, size x, size y)
+
+	love graphics setColor(color[0] - 50, color[1] - 50, color[2] - 50)
+	love graphics rectangle("line", x, y, size x, size y)
+}
+
+love draw = () -> {
+	cool_square(potato pos x, potato pos y, potato size, potato color)
+	cool_square(player pos x, player pos y, player size, player color)
+}
